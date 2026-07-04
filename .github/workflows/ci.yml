@@ -1,0 +1,170 @@
+name: Vote Service CI/CD
+
+on:
+  push:
+    paths:
+      - 'vote/**'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    paths:
+      - 'vote/**'
+      - '.github/workflows/ci.yml'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/vote
+
+jobs:
+  lint:
+    name: Lint Code & Manifests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install Linting Tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8
+
+    - name: Run Flake8 Linting
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 ./vote --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings.
+        flake8 ./vote --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Set up Helm
+      uses: azure/setup-helm@v4
+      with:
+        version: v3.12.0
+
+    - name: Lint Helm Chart
+      run: helm lint charts/voting-app/
+
+  build-and-push:
+    name: Build & Push Container Image
+    needs: lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract Metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=sha
+          type=ref,event=branch
+          type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./vote
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  smoke-test:
+    name: Deploy & Smoke Test
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Helm
+      uses: azure/setup-helm@v4
+      with:
+        version: v3.12.0
+
+    - name: Create kind Cluster
+      uses: helm/kind-action@v1.10.0
+      with:
+        cluster_name: kind-ci-cluster
+
+    - name: Verify Cluster Status
+      run: |
+        kubectl cluster-info
+        kubectl get nodes
+
+    - name: Build local images for other services
+      run: |
+        # We need mock/local images for result and worker in the runner
+        docker build -t example-voting-app-result:latest ./result
+        docker build -t example-voting-app-worker:latest ./worker
+        # Build the vote image locally too
+        docker build -t example-voting-app-vote:latest ./vote
+
+    - name: Load images into kind
+      run: |
+        kind load docker-image example-voting-app-vote:latest --name kind-ci-cluster
+        kind load docker-image example-voting-app-result:latest --name kind-ci-cluster
+        kind load docker-image example-voting-app-worker:latest --name kind-ci-cluster
+
+    - name: Deploy Helm Chart
+      run: |
+        helm upgrade --install voting-app ./charts/voting-app \
+          -f ./charts/voting-app/values-dev.yaml \
+          --set images.vote.repository=example-voting-app-vote \
+          --set images.vote.tag=latest \
+          --set images.result.repository=example-voting-app-result \
+          --set images.result.tag=latest \
+          --set images.worker.repository=example-voting-app-worker \
+          --set images.worker.tag=latest
+
+    - name: Wait for Pods
+      run: |
+        echo "Waiting for PostgreSQL bootstrap..."
+        kubectl wait --for=condition=complete job/db-bootstrap --timeout=90s || true
+        echo "Waiting for vote deployment to be ready..."
+        kubectl wait --for=condition=ready pod --selector=app=vote --timeout=90s
+        echo "Pods status:"
+        kubectl get pods
+
+    - name: Port Forward and Smoke Test
+      run: |
+        # Start port-forward in background
+        kubectl port-forward svc/vote 8080:80 &
+        PF_PID=$!
+        
+        # Wait a few seconds for port-forward to establish
+        sleep 5
+        
+        # Test the endpoint
+        echo "Testing endpoint http://localhost:8080..."
+        HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080)
+        
+        # Kill the port-forward process
+        kill $PF_PID
+        
+        # Check HTTP Status Code
+        if [ "$HTTP_STATUS" -eq 200 ]; then
+          echo "Smoke Test Passed! HTTP Status is $HTTP_STATUS"
+        else
+          echo "Smoke Test Failed! HTTP Status is $HTTP_STATUS"
+          exit 1
+        fi

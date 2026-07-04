@@ -1,0 +1,118 @@
+environment: default
+
+# Common Image settings
+images:
+  vote:
+    repository: example-voting-app-vote
+    tag: latest
+    pullPolicy: IfNotPresent
+  result:
+    repository: example-voting-app-result
+    tag: latest
+    pullPolicy: IfNotPresent
+  worker:
+    repository: example-voting-app-worker
+    tag: latest
+    pullPolicy: IfNotPresent
+  redis:
+    repository: redis
+    tag: alpine
+    pullPolicy: IfNotPresent
+  postgres:
+    repository: postgres
+    tag: 15-alpine
+    pullPolicy: IfNotPresent
+
+# Postgres config
+postgres:
+  user: postgres
+  password: postgresPassword123
+  db: postgres
+  replicaCount: 1
+  storageClass: ""
+  storageSize: 1Gi
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "256Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+
+# Redis config
+redis:
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "64Mi"
+    limits:
+      cpu: "200m"
+      memory: "128Mi"
+
+# Vote service config
+vote:
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "300m"
+      memory: "256Mi"
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+
+# Result service config
+result:
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "300m"
+      memory: "256Mi"
+
+# Worker service config
+worker:
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "300m"
+      memory: "256Mi"
+
+# Ingress configuration
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+  hosts:
+    vote: vote.127.0.0.1.nip.io
+    result: result.127.0.0.1.nip.io
+
+# Network policies enablement
+networkPolicies:
+  enabled: true
+
+# Security Contexts
+securityContext:
+  pod:
+    runAsNonRoot: true
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+  container:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+      - ALL

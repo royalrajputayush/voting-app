@@ -1,0 +1,63 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-bootstrap
+  labels:
+    app: db-bootstrap
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "10"
+spec:
+  backoffLimit: 5
+  template:
+    metadata:
+      name: db-bootstrap
+      labels:
+        app: db-bootstrap
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: bootstrap
+        image: "{{ .Values.images.postgres.repository }}:{{ .Values.images.postgres.tag }}"
+        imagePullPolicy: {{ .Values.images.postgres.pullPolicy }}
+        env:
+        - name: PGUSER
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: postgres-user
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: postgres-password
+        - name: PGDATABASE
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: postgres-db
+        - name: PGHOST
+          value: db
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for PostgreSQL to become ready..."
+          for i in $(seq 1 30); do
+            if pg_isready -h "$PGHOST" -U "$PGUSER" -d "$PGDATABASE" 2>/dev/null; then
+              echo "PostgreSQL is ready. Bootstrapping schema..."
+              psql -h "$PGHOST" -U "$PGUSER" -d "$PGDATABASE" -c "
+                CREATE TABLE IF NOT EXISTS votes (
+                  id VARCHAR(255) NOT NULL UNIQUE,
+                  vote VARCHAR(255) NOT NULL
+                );
+              "
+              echo "Bootstrap complete!"
+              exit 0
+            fi
+            echo "Attempt $i: PostgreSQL not ready yet, retrying in 3s..."
+            sleep 3
+          done
+          echo "ERROR: PostgreSQL did not become ready in time."
+          exit 1

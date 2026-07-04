@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  labels:
+    app: worker
+spec:
+  replicas: {{ .Values.worker.replicaCount }}
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - name: worker
+        image: "{{ .Values.images.worker.repository }}:{{ .Values.images.worker.tag }}"
+        imagePullPolicy: {{ .Values.images.worker.pullPolicy }}
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: postgres-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: postgres-password
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: postgres-db
+        - name: CONNECTION_STRING
+          value: "Server=db;Username=$(POSTGRES_USER);Password=$(POSTGRES_PASSWORD);Database=$(POSTGRES_DB);"
+        - name: REDIS_HOST
+          value: "redis"
+        resources:
+          {{- toYaml .Values.worker.resources | nindent 10 }}
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "true"
+          initialDelaySeconds: 10
+          periodSeconds: 15
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "true"
+          initialDelaySeconds: 5
+          periodSeconds: 10

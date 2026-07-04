@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5-Minute Presentation Video Script & Guide</title>
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-secondary: #121824;
+      --bg-tertiary: #1a2234;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-success: #10b981;
+      --accent-warning: #f59e0b;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --border-color: #26354a;
+      --card-gradient: linear-gradient(135deg, #121824 0%, #162033 100%);
+      --glow-blue: 0 0 25px rgba(59, 130, 246, 0.2);
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      padding-bottom: 80px;
+    }
+
+    header {
+      background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15), transparent 50%),
+                  radial-gradient(circle at top left, rgba(16, 185, 129, 0.08), transparent 45%);
+      border-bottom: 1px solid var(--border-color);
+      padding: 50px 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 2.6rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-desc {
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      max-width: 600px;
+      margin: 0 auto 24px auto;
+    }
+
+    .meta-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .meta-item i {
+      color: var(--accent);
+    }
+
+    /* Timeline Steps */
+    .timeline {
+      margin-top: 50px;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 31px;
+      height: 100%;
+      width: 2px;
+      background: var(--border-color);
+    }
+
+    .step-block {
+      position: relative;
+      margin-bottom: 40px;
+      padding-left: 80px;
+    }
+
+    .step-marker {
+      position: absolute;
+      left: 12px;
+      top: 0;
+      width: 40px;
+      height: 40px;
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--accent-hover);
+      z-index: 2;
+      transition: all 0.3s ease;
+    }
+
+    .step-block:hover .step-marker {
+      border-color: var(--accent);
+      box-shadow: var(--glow-blue);
+      color: #ffffff;
+    }
+
+    .step-card {
+      background: var(--card-gradient);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      transition: all 0.3s ease;
+    }
+
+    .step-block:hover .step-card {
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: 12px;
+    }
+
+    .step-title {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .step-time {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: var(--accent-warning);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Script formatting */
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    .script-text {
+      background: rgba(0, 0, 0, 0.25);
+      border-left: 4px solid var(--accent);
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #e5e7eb;
+      margin-bottom: 20px;
+    }
+
+    .action-steps {
+      list-style-type: none;
+    }
+
+    .action-steps li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .action-steps li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent-success);
+      font-weight: 700;
+    }
+
+    /* Code boxes */
+    .code-box {
+      background: #060913;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #38bdf8;
+      overflow-x: auto;
+      margin-top: 10px;
+      position: relative;
+    }
+
+    .code-box button {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      transition: all 0.3s;
+    }
+
+    .code-box button:hover {
+      color: #ffffff;
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* Recording Tips Box */
+    .tips-panel {
+      background: rgba(16, 185, 129, 0.04);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 16px;
+      padding: 24px;
+      margin-top: 40px;
+    }
+
+    .tips-title {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent-success);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tips-list {
+      list-style-position: inside;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .tips-list li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>DevOps Presentation Video Guide</h1>
+      <p class="header-desc">A structured step-by-step workflow and script to record your 5-minute Loom walkthrough for the SquareOps DevOps Candidate Take-Home.</p>
+      <div class="meta-box">
+        <span class="meta-item"><i class="fa-solid fa-hourglass-half"></i> Total Time: ~5 Mins</span>
+        <span class="meta-item"><i class="fa-solid fa-video"></i> Target Tool: Loom / Zoom</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="timeline">
+
+      <!-- Step 1 -->
+      <div class="step-block">
+        <div class="step-marker">1</div>
+        <div class="step-card">
+          <div class="step-header">
+            <h3 class="step-title">Introduction & Repository Tour</h3>
+            <span class="step-time"><i class="fa-regular fa-clock"></i> 0:00 - 0:30 (30s)</span>
+          </div>
+          <div class="section-title">What to Show</div>
+          <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 12px;">Show your camera and the repository files in your editor (e.g. VS Code).</p>
+          
+          <div class="section-title">Suggested Talking Script</div>
+          <div class="script-text">
+            "Hello, my name is [Your Name], and this is my submission for the SquareOps DevOps Engineer take-home assignment. Today, I'll walk you through how I migrated the Docker Voting App onto a production-ready Kubernetes setup. Let's start with a quick tour of the repository. Over in the file tree, you'll see I created a standardized Helm Chart under 'charts/voting-app' containing all templates and parameters. I've also built automated bootstrap scripts for both Linux and Windows environments, and created a GitHub Actions workflow in '.github/workflows/ci.yml'."
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step-block">
+        <div class="step-marker">2</div>
+        <div class="step-card">
+          <div class="step-header">
+            <h3 class="step-title">Live Demo: Local Verification</h3>
+            <span class="step-time"><i class="fa-regular fa-clock"></i> 0:30 - 2:00 (90s)</span>
+          </div>
+          <div class="section-title">What to Show</div>
+          <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 12px;">Open your terminal, show the running pods, then open your browser and showcase the voting flow.</p>
+          
+          <div class="section-title">Suggested Talking Script</div>
+          <div class="script-text">
+            "I'll showcase the running cluster. Using Kind, our entire stack has been deployed. If we check the pods, all five core services—the vote frontend, redis queue, .NET worker, postgres database, and result dashboard—are running healthily. Since we're using NGINX Ingress, I can navigate to 'vote.127.0.0.1.nip.io' and cast a vote for Cats. When I check the results dashboard at 'result.127.0.0.1.nip.io', we can see the vote tally updates in real time. We can also tail the logs of the C# worker pod to see it processing the queue entries..."
+          </div>
+
+          <div class="section-title">Useful Commands to Copy</div>
+          <div class="code-box">
+            kubectl get pods<br>
+            kubectl get ingress<br>
+            kubectl logs -l app=worker --tail=10
+            <button onclick="copyToClipboard(this)">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step-block">
+        <div class="step-marker">3</div>
+        <div class="step-card">
+          <div class="step-header">
+            <h3 class="step-title">Helm Chart & Core Architecture Decision</h3>
+            <span class="step-time"><i class="fa-regular fa-clock"></i> 2:00 - 3:30 (90s)</span>
+          </div>
+          <div class="section-title">What to Show</div>
+          <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 12px;">Open `charts/voting-app/templates/db-statefulset.yaml` and `networkpolicies.yaml` in your editor.</p>
+          
+          <div class="section-title">Suggested Talking Script</div>
+          <div class="script-text">
+            "Next, let's look at the Helm Chart templates. One key decision I made was refactoring the Postgres database from a plain Deployment to a StatefulSet with a PersistentVolumeClaim. This ensures vote data persists reliably across container crashes or manual deletions. I also decoupled the administrative passwords using Secrets. In terms of security, I implemented Network Policies. Ingress is restricted so that only the NGINX controller can talk to the frontends, and the database and Redis instances are blocked from any direct public access, allowing connections only from authorized consumer pods."
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="step-block">
+        <div class="step-marker">4</div>
+        <div class="step-card">
+          <div class="step-header">
+            <h3 class="step-title">CI/CD Pipeline Demonstration</h3>
+            <span class="step-time"><i class="fa-regular fa-clock"></i> 3:30 - 4:30 (60s)</span>
+          </div>
+          <div class="section-title">What to Show</div>
+          <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 12px;">Open your web browser and show a successful build run in the GitHub Actions 'Actions' tab.</p>
+          
+          <div class="section-title">Suggested Talking Script</div>
+          <div class="script-text">
+            "For the CI/CD pipeline, I configured a GitHub Actions workflow that triggers on code pushes under '/vote/**'. The pipeline lints both the Python codebase and the Helm templates to catch format issues. Next, it compiles the image and publishes it to GitHub Container Registry. Finally, it provisions a temporary kind cluster in the pipeline runner, deploys the Helm chart, and runs an automated curl smoke-test validation checking for HTTP 200 OK."
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="step-block">
+        <div class="step-marker">5</div>
+        <div class="step-card">
+          <div class="step-header">
+            <h3 class="step-title">Production Trade-offs & Improvements</h3>
+            <span class="step-time"><i class="fa-regular fa-clock"></i> 4:30 - 5:00 (30s)</span>
+          </div>
+          <div class="section-title">What to Show</div>
+          <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 12px;">Show your camera or return to the README.md trade-offs section.</p>
+          
+          <div class="section-title">Suggested Talking Script</div>
+          <div class="script-text">
+            "Given more time for a production environment, I would make a few changes. First, I'd replace the local hostPath storage with an enterprise CSI driver like AWS EBS. Second, I'd set up cert-manager to manage SSL/TLS certificates automatically. Finally, I'd move secret storage to a cloud KMS provider like AWS Secrets Manager or HashiCorp Vault. Thank you for your time, and I look forward to our follow-up discussion!"
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Tips Panel -->
+    <div class="tips-panel">
+      <h3 class="tips-title"><i class="fa-solid fa-lightbulb"></i> Recording Best Practices</h3>
+      <ul class="tips-list">
+        <li><strong>Cluster Status</strong>: Make sure your kind cluster is running and healthy before clicking record.</li>
+        <li><strong>Resolution Check</strong>: Zoom in slightly in VS Code (Ctrl + or Cmd +) so the text is highly readable in the video.</li>
+        <li><strong>Clean Environment</strong>: Close extra browser tabs and chat systems to avoid notifications during recording.</li>
+        <li><strong>Audio Quality</strong>: Use a clear microphone and record in a quiet room.</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Prepared for DevOps Candidates &middot; SquareOps Take-Home Assessment Guide</p>
+    </div>
+  </footer>
+
+  <script>
+    function copyToClipboard(button) {
+      const codeBox = button.parentElement;
+      // Get only the text nodes (exclude the button text)
+      const text = Array.from(codeBox.childNodes)
+        .filter(node => node.nodeName !== 'BUTTON')
+        .map(node => node.textContent)
+        .join('');
+      
+      navigator.clipboard.writeText(text.trim()).then(() => {
+        button.textContent = 'Copied!';
+        button.style.background = '#10b981';
+        button.style.color = '#ffffff';
+        setTimeout(() => {
+          button.textContent = 'Copy';
+          button.style.background = 'rgba(255,255,255,0.05)';
+          button.style.color = 'var(--text-muted)';
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
